@@ -73,8 +73,8 @@ struct DashWebView: UIViewRepresentable {
         refresh.addTarget(context.coordinator, action: #selector(Coordinator.refresh(_:)), for: .valueChanged)
         wv.scrollView.refreshControl = refresh
 
-        if let url = URL(string: urlString) { wv.load(URLRequest(url: url)) }
-        context.coordinator.startPushing(into: wv)
+        if let url = URL(string: urlString) { wv.load(URLRequest(url: url, cachePolicy: .reloadRevalidatingCacheData)) }
+        context.coordinator.startPushing(into: wv); context.coordinator.armForeground(wv)
         return wv
     }
 
@@ -85,6 +85,13 @@ struct DashWebView: UIViewRepresentable {
         private var timer: Timer?
         init(motion: MotionBridge) { self.motion = motion }
 
+        weak var web: WKWebView?
+        func armForeground(_ wv: WKWebView) {
+            web = wv
+            NotificationCenter.default.addObserver(self, selector: #selector(fg),
+                name: UIApplication.willEnterForegroundNotification, object: nil)
+        }
+        @objc func fg() { web?.reloadFromOrigin() }
         func startPushing(into wv: WKWebView) {
             timer?.invalidate()
             timer = Timer.scheduledTimer(withTimeInterval: 0.12, repeats: true) { [weak wv, weak self] _ in
@@ -115,7 +122,7 @@ struct DashWebView: UIViewRepresentable {
             return nil
         }
         @objc func refresh(_ sender: UIRefreshControl) {
-            if let wv = sender.superview?.superview as? WKWebView { wv.reload() }
+            if let wv = sender.superview?.superview as? WKWebView { wv.reloadFromOrigin() }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { sender.endRefreshing() }
         }
         deinit { timer?.invalidate() }

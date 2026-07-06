@@ -7,6 +7,12 @@ import SwiftUI
 @main
 struct DashApp: App {
     @StateObject private var motion = MotionBridge()
+    init() {
+        // No HTTP response caching — web-side edits (dashboards, the flights UI)
+        // must appear on a refresh, never requiring an app reinstall.
+        // Login/cookies/localStorage survive separately via WKWebsiteDataStore.
+        URLCache.shared = URLCache(memoryCapacity: 0, diskCapacity: 0, directory: nil)
+    }
     var body: some Scene {
         WindowGroup { RootView().environmentObject(motion).onAppear { motion.start() } }
     }
