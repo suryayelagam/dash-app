@@ -1,4 +1,4 @@
-name: Build Skyview IPA
+name: Build Dash IPA
 on:
   push:
     branches: [main]
@@ -26,7 +26,7 @@ jobs:
 
       - name: Build (unsigned — AltServer signs on install)
         run: |
-          xcodebuild -project Skyview.xcodeproj -scheme Skyview \
+          xcodebuild -project Skyview.xcodeproj -scheme Dash \
             -configuration Release -sdk iphoneos \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
@@ -35,21 +35,21 @@ jobs:
       - name: Package IPA
         run: |
           mkdir -p Payload
-          cp -R "build/Build/Products/Release-iphoneos/Skyview.app" Payload/
-          zip -qry Skyview.ipa Payload
-          ls -la Skyview.ipa
+          cp -R "build/Build/Products/Release-iphoneos/Dash.app" Payload/
+          zip -qry Dash.ipa Payload
+          ls -la Dash.ipa
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Skyview-ipa
-          path: Skyview.ipa
+          name: Dash-ipa
+          path: Dash.ipa
 
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
-          name: Skyview (latest)
-          files: Skyview.ipa
+          name: Dash (latest)
+          files: Dash.ipa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,8 +1,6 @@
-# Skyview
+# Dash
 
-A tiny native iOS shell for Home Assistant that grants webview sensor
-permissions (device orientation / compass), so the Skyview flights
-"point me at the plane" finder works in-app. Built unsigned in CI;
-install via AltStore (AltServer re-signs with a free Apple ID).
-
-Change the HA URL from the gear button (default `http://homeassistant.local:8123`).
+The Yelagam house app: Home Assistant (Home + Sky tabs, with a NATIVE
+compass bridge so the point-at-the-plane finder works over plain-HTTP HA),
+plus a native Tasks tab on Apple Reminders. Unsigned CI build, sideloaded
+via AltStore. Set your HA URL in the Settings tab.
